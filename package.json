@@ -1,0 +1,40 @@
+{
+  "name": "minecraftingdbot",
+  "version": "2.0.0",
+  "description": "Discord bot for unofficial Minecrafting.ru discord",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && node build/index.js"
+  },
+  "dependencies": {
+    "cheerio": "1.0.0-rc.3",
+    "discord.js": "^12.4.1",
+    "dotenv": "^8.2.0",
+    "fast-xml-parser": "^3.17.4",
+    "lodash": "^4.17.20",
+    "log4js": "^6.3.0",
+    "minecraft-server-util": "^3.1.0",
+    "moment": "^2.29.1",
+    "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.22",
+    "@types/lodash": "^4.14.165",
+    "@types/node-fetch": "^2.5.7",
+    "@types/request-promise-native": "^1.0.17",
+    "@typescript-eslint/eslint-plugin": "^4.6.1",
+    "@typescript-eslint/parser": "^4.6.1",
+    "eslint": "^7.13.0",
+    "typescript": "^4.0.5"
+  },
+  "author": "Virenbar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "engines": {
+    "node": "12.x"
+  }
+}

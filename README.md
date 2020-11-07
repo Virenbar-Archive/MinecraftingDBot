@@ -1,2 +1,2 @@
 # MinecraftingDBot
-Discord bot for minecrafting.ru
+Discord bot for unofficial minecrafting.ru discord
