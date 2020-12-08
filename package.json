@@ -19,7 +19,7 @@
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.22",
+    "@types/cheerio": "^0.22.23",
     "@types/lodash": "^4.14.165",
     "@types/node-fetch": "^2.5.7",
     "@types/request-promise-native": "^1.0.17",
