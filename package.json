@@ -8,19 +8,19 @@
     "start": "npm run build && node build/index.js"
   },
   "dependencies": {
-    "cheerio": "1.0.0-rc.3",
+    "cheerio": "1.0.0-rc.5",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "fast-xml-parser": "^3.17.5",
     "lodash": "^4.17.20",
     "log4js": "^6.3.0",
-    "minecraft-server-util": "^3.2.0",
+    "minecraft-server-util": "^3.4.2",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "@types/cheerio": "^0.22.23",
-    "@types/lodash": "^4.14.165",
+    "@types/lodash": "^4.14.168",
     "@types/node-fetch": "^2.5.7",
     "@types/request-promise-native": "^1.0.17",
     "@typescript-eslint/eslint-plugin": "^4.9.1",
