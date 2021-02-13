@@ -8,7 +8,7 @@
     "start": "npm run build && node build/index.js"
   },
   "dependencies": {
-    "cheerio": "1.0.0-rc.3",
+    "cheerio": "1.0.0-rc.5",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "fast-xml-parser": "^3.17.5",
