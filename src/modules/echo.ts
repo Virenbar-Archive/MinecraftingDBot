@@ -2,14 +2,14 @@
 /* 
 Resends message to everyone in same voice channel as sender. 
 */
-import { Client, MessageEmbed, MessageEmbedOptions, VoiceChannel } from "discord.js"
-import { prefix } from './../config.json'
+import { MessageEmbedOptions, VoiceChannel } from "discord.js"
 import { BotClient } from './../index'
+import { config } from '../lib/config'
 
 export default function (): void {
   BotClient.on('message', async message => {
     try {
-      if (message.channel.type != 'dm' || message.content.startsWith(prefix) || message.author.bot) return
+      if (message.channel.type != 'dm' || message.content.startsWith(config.prefix) || message.author.bot) return
       const user = message.author
       let userVoice: VoiceChannel
       const userGuilds = message.author.client.guilds.cache

@@ -1,18 +1,18 @@
-import { TextChannel } from "discord.js";
+import { TextChannel } from "discord.js"
 import fetch from "node-fetch"
 import $ from "cheerio"
 
 import { BotClient } from '../index'
-import { sleep, nodash } from '../utils'
-import { chServerLog, BansPage } from '../config.json'
-import { savedState } from '../state'
+import { sleep, fixMD } from '../utils'
+import { config } from '../lib/config'
+import { savedState } from '../lib/state'
 
 export let lastID = 0
 let channel: TextChannel
 
 export default function (): void {
     BotClient.on("ready", async () => {
-        channel = await BotClient.channels.fetch(chServerLog) as TextChannel
+        channel = await BotClient.channels.fetch(config.chServerLog) as TextChannel
         lastID = savedState.bansID
         checkBans()
     })
@@ -21,7 +21,7 @@ export default function (): void {
 async function checkBans() {
     try {
         const bans: Ban[] = []
-        const page = $.load(await (await fetch(BansPage)).text())
+        const page = $.load(await (await fetch(config.bansPage)).text())
         page('.ban_item').each((index, element) => {
             bans.push(parseBan(element))
             if (index == 9) { return false }
@@ -52,10 +52,10 @@ function parseBan(e: cheerio.Element): Ban {
 }
 
 async function reportBan(b: Ban) {
-    let embed = {
+    const embed = {
         //"author": { "name": user.username, "icon_url": user.avatarURL },
         "color": b.ban_second ? 4289797 : 13632027,
-        "description": `Игрок **${nodash(b.ban_player)}** был заблокирован с причиной "**${b.ban_reason}**"`,
+        "description": `Игрок **${fixMD(b.ban_player)}** был заблокирован с причиной "**${b.ban_reason}**"`,
         "footer": { "text": b.ban_operator },
         "timestamp": b.ban_date.getTime()
     }

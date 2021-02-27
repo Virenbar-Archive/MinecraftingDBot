@@ -1,0 +1,13 @@
+{
+  "prefix": "!",
+  "token": "nope",
+  "chVoiceLog": "595916641070481408",
+  "chNews": "444843811676618753",
+  "chMinecraft": "",
+  "chServerLog": "444843716595679232",
+  "BansPage": "http://minecrafting.ru/page/bans",
+  "badUsers": [
+    "132479201470185472",
+    "321330747736719362"
+  ]
+}

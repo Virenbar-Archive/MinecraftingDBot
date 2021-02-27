@@ -1,7 +1,7 @@
 import fs from "fs"
-import { logger } from '../src/index'
-import { lastID } from './modules/bans'
-import { sleep } from "./utils"
+import { logger } from '../index'
+import { lastID } from '../modules/bans'
+import { sleep } from "../utils"
 
 const file = "state.json"
 export let savedState: State

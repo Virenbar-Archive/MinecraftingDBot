@@ -1,18 +1,18 @@
-//require('dotenv').config()
-import dotenv from 'dotenv'
-dotenv.config()
-//const moment = require('moment');
-//const config = require('./config.json');
+
 //Imports
 import { configure, getLogger } from "log4js";
 import Discord from "discord.js"
-import { loadState } from './state';
+import dotenv from "dotenv"
+dotenv.config()
+
+import config from './lib/config'
+import { loadState } from './lib/state';
 import playercount from './modules/playercountA'
 import activities from './modules/activities'
 import echo from './modules/echo'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import bans from './modules/bans'
 import voicelog from './modules/voicelog'
+import reactions from './modules/reactions'
+//import bans from './modules/bans'
 
 configure({
   appenders: {
@@ -24,9 +24,11 @@ configure({
     default: { appenders: ["file", "console"], level: "debug" }
   }
 });
-export const logger = getLogger()
+export const logger = getLogger("DBot")
 export const BotClient = new Discord.Client();
 const token = process.env.token
+
+config(true)
 loadState()
 
 //Modules
@@ -35,6 +37,7 @@ echo()
 //bans()
 voicelog()
 activities()
+reactions()
 
 //Events
 BotClient.on('ready', () => {

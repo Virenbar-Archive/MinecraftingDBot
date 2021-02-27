@@ -1,5 +1,6 @@
 import { status } from "minecraft-server-util"
-import { BotClient } from '../index'
+
+import { BotClient, logger } from '../index'
 import { sleep } from '../utils'
 
 //var lastOnline = Infinity
@@ -19,7 +20,7 @@ async function updateCount() {
         } */
         await sleep(10 * 1000)
     } catch (err) {
-        console.log(err)
+        logger.warn(err)
         await sleep(60 * 1000)
     } finally {
         updateCount()

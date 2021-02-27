@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
+import { Client, MessageEmbedOptions, TextChannel } from 'discord.js'
 import { get } from 'request-promise-native'
 import { validate, parse } from 'fast-xml-parser'
 import { load } from 'cheerio'
 import moment from 'moment'
-import { chNews } from './../config.json'
-import { Client, MessageEmbedOptions, TextChannel } from 'discord.js'
+
+import { config } from '../lib/config';
 const rss = 'http://minecrafting.ru/rss/ccs/1c1-%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8/'
 
 let latest = 'e8b1cbd05f6e6a358a81dee52493dd06'
@@ -47,6 +48,6 @@ export default async function (client: Client): Promise<void> {
       },
       "timestamp": moment(item.pubDate).toDate()
     }
-    await (await client.channels.fetch(chNews) as TextChannel).send({ "embed": embed })
+    await (await client.channels.fetch(config.chNews) as TextChannel).send({ "embed": embed })
   }
 }

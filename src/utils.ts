@@ -2,14 +2,13 @@
  * Sleep for ms
  * @param ms milliseconds
  */
-export function sleep(ms: number) {
+export function sleep(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 /**
- * Escape all underscores
+ * Escape markdown chars
  */
-export function nodash(str: string) {
-    //Underscore escape
-    return str.replace(/_/g, '\\_')
+export function fixMD(str: string): string {
+    return str.replace(/_/g, '\\_').replace(/\*/g, '\\*')
 }
