@@ -9,7 +9,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "cheerio": "1.0.0-rc.9",
+    "cheerio": "1.0.0-rc.10",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
     "fast-xml-parser": "^3.19.0",
