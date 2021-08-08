@@ -2,54 +2,61 @@
 /* 
 Resends message to everyone in same voice channel as sender. 
 */
-import { MessageEmbedOptions, VoiceChannel } from "discord.js"
-import { BotClient } from './../index'
-import { config } from '../lib/config'
+import { Client, Message, MessageEmbedOptions, StageChannel, VoiceChannel } from "discord.js"
 
-export default function (): void {
-  BotClient.on('message', async message => {
-    try {
-      if (message.channel.type != 'dm' || message.content.startsWith(config.prefix) || message.author.bot) return
-      const user = message.author
-      let userVoice: VoiceChannel
-      const userGuilds = message.author.client.guilds.cache
-      //console.log(userGuilds)
-      for (const [id, guild] of userGuilds) {
-        //console.log(guild.member(message.author))
-        if (guild.member(message.author)) {
-          userVoice = guild.member(message.author).voice.channel
-        }
-        if (userVoice) break
-      }
-      if (!userVoice) return
-      //console.log(userVoice.members)
-      //embed = new Discord.RichEmbed()
-      if (userVoice.members.size == 1) {
-        await message.react('❎') //✅✔❎❌
-        await message.reply("В канале нет других пользователей")
-      } else {
-        const embed: MessageEmbedOptions = {
-          "author": {
-            "name": user.username,
-            "iconURL": user.avatar
-          },
-          "description": message.content,
+import { Config } from '../lib/config'
+import { IModule } from "."
+import { logger } from ".."
+
+let Bot: Client
+function Load(client: Client): void { Bot = client }
+
+async function EchoMessage(message: Message) {
+  const user = message.author
+  const userGuilds = message.author.client.guilds.cache
+  //console.log(userGuilds)
+  const userVoice = message.member.voice.channel
+  if (!userVoice) return
+  //console.log(userVoice.members)
+  //embed = new Discord.RichEmbed()
+  if (userVoice.members.size == 1) {
+    await message.react('❎') //✅✔❎❌
+    await message.reply("В канале нет других пользователей")
+  } else {
+    const embed: MessageEmbedOptions = {
+      "author": {
+        "name": user.username,
+        "iconURL": user.avatar
+      },
+      "description": message.content,
+      //embed.color
+      "footer": { "text": userVoice.name },
+      "timestamp": message.createdTimestamp
+    }
+    for (const [id, member] of userVoice.members) {
+      if (member.id != user.id) {
+        await member.send({
+          "embeds": [embed],
           "files": message.attachments.map(attachment => {
-            return attachment.url
-          }),
-          //embed.color
-          "footer": { "text": userVoice.name },
-          "timestamp": message.createdTimestamp
-        }
-        for (const [id, member] of userVoice.members) {
-          if (member.id != user.id) {
-            await member.send({ "embed": embed })
-          }
-        }
-        await message.react('✅')
+            return { attachment: attachment.url }
+          })
+        })
       }
+    }
+    await message.react('✅')
+  }
+}
+
+async function Run(): Promise<void> {
+  Bot.on('messageCreate', async message => {
+    try {
+      if (message.channel.type != 'DM' || message.content.startsWith(Config.prefix) || message.author.bot) return
+      await EchoMessage(message)
     } catch (err) {
-      console.log("Ошибка при отправке эхо\n" + err)
+      logger.error("Echo - Ошибка при отправке эхо")
+      logger.error(err)
     }
   })
 }
+
+export default { Load: Load, Run: Run } as IModule

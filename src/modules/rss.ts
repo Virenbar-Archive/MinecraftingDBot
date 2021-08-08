@@ -3,9 +3,9 @@ import { Client, MessageEmbedOptions, TextChannel } from 'discord.js'
 import { get } from 'request-promise-native'
 import { validate, parse } from 'fast-xml-parser'
 import { load } from 'cheerio'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
-import { config } from '../lib/config';
+import { Config } from '../lib/config';
 const rss = 'http://minecrafting.ru/rss/ccs/1c1-%D0%BD%D0%BE%D0%B2%D0%BE%D1%81%D1%82%D0%B8/'
 
 let latest = 'e8b1cbd05f6e6a358a81dee52493dd06'
@@ -22,7 +22,7 @@ export default async function (client: Client): Promise<void> {
     }
     console.log(item.title)
     console.log(decodeURI(item.link))
-    console.log(moment(item.pubDate).toISOString())
+    console.log(item.pubDate)
     console.log(item.guid)
 
     const $ = load(await get(item.link))
@@ -46,8 +46,8 @@ export default async function (client: Client): Promise<void> {
         "iconURL": '',
         "text": ''
       },
-      "timestamp": moment(item.pubDate).toDate()
+      "timestamp": DateTime.fromISO(item.pubDate).toJSDate()
     }
-    await (await client.channels.fetch(config.chNews) as TextChannel).send({ "embed": embed })
+    await (await client.channels.fetch(Config.chNews) as TextChannel).send({ "embeds": [embed] })
   }
 }

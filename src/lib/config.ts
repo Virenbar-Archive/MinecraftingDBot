@@ -1,4 +1,5 @@
 
+import { Snowflake } from "discord.js"
 import fs from "fs"
 import path from "path"
 
@@ -6,31 +7,35 @@ import { logger } from '../index'
 
 const file = path.join(__dirname, '../../config.json')
 let fsw: fs.FSWatcher
-export let config: Config
 
-export default function (watch = false): void {
+export let Config: IConfig
+
+export function loadConfig(watch = false): void {
     if (fs.existsSync(file)) {
-        Load()
+        readConfig()
         if (watch) {
             fsw = fs.watch(file)
             fsw.on('change', () => {
                 logger.debug('Reloading config')
-                Load()
+                readConfig()
             })
         }
     } else {
         throw new Error("No config found");
     }
 }
-function Load(): void {
-    const raw = fs.readFileSync(file, 'utf8')
-    config = ParceConfig(JSON.parse(raw))
 
+function readConfig(): void {
+    const raw = fs.readFileSync(file, 'utf8')
+    Config = JSON.parse(raw)
+    logger.info(Config)
 }
+/*
 function ParceConfig(config: ConfigFile): Config {
     return {
         "prefix": config.prefix,
         "token": config.token,
+        "mcServer": config.mcServer,
         "chVoiceLog": config.chVoiceLog,
         "chNews": config.chNews,
         "chMinecraft": config.chMinecraft,
@@ -40,23 +45,24 @@ function ParceConfig(config: ConfigFile): Config {
     }
 }
 
-interface Config {
-    "prefix": string,
-    "token": string,
-    "chVoiceLog": string,
-    "chNews": string,
-    "chMinecraft": string,
-    "chServerLog": string,
-    "bansPage": string,
+interface Config extends Omit<ConfigFile, "badUsers"> {
     "badUsers": Set<string>
 }
-interface ConfigFile {
+*/
+export interface IConfig {
     "prefix": string,
     "token": string,
-    "chVoiceLog": string,
-    "chNews": string,
-    "chMinecraft": string,
-    "chServerLog": string,
+    "mcServer": {
+        "host": string,
+        "port": number
+    }
+    "chVoiceLog": {
+        "guild": Snowflake,
+        "channel": Snowflake
+    },
+    "chNews": Snowflake,
+    "chMinecraft": Snowflake,
+    "chServerLog": Snowflake,
     "bansPage": string,
     "badUsers": string[]
 }

@@ -1,7 +1,14 @@
 {
   "prefix": "!",
   "token": "nope",
-  "chVoiceLog": "595916641070481408",
+  "mcServer": {
+    "host": "minecrafting.ru",
+    "port": 25565
+  },
+  "chVoiceLog": {
+    "guild": "227803301725339649",
+    "channel": "595916641070481408"
+  },
   "chNews": "444843811676618753",
   "chMinecraft": "",
   "chServerLog": "444843716595679232",
