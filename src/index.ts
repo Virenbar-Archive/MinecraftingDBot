@@ -1,50 +1,49 @@
-
-//Imports
-import { configure, getLogger } from "log4js";
-import Discord from "discord.js"
+import Discord, { Client, Intents } from "discord.js"
+import { Logger } from "log4js"
 import dotenv from "dotenv"
 dotenv.config()
 
-import config from './lib/config'
-import { loadState } from './lib/state';
-import playercount from './modules/playercountA'
-import activities from './modules/activities'
-import echo from './modules/echo'
-import voicelog from './modules/voicelog'
-import reactions from './modules/reactions'
-//import bans from './modules/bans'
+import { loadLogger } from "./lib/logger"
+import { IConfig, loadConfig } from './lib/config'
+export { State, saveState } from './lib/state'
+import { loadState } from './lib/state'
 
-configure({
-  appenders: {
-    file: { type: "file", filename: "logs/debug.log", maxLogSize: 1024 * 1024 * 10, backups: 5, compress: true },
-    console: { type: "console", layout: { type: "colored" } },
-    "err-filter": { type: 'logLevelFilter', appender: 'console', level: 'error' }
-  },
-  categories: {
-    default: { appenders: ["file", "console"], level: "debug" }
-  }
-});
-export const logger = getLogger("DBot")
-export const BotClient = new Discord.Client();
-const token = process.env.token
+import Interactions from './interactions';
+import Modules from './modules'
+import Events from "./events"
 
-config(true)
+const myIntents = new Intents();
+myIntents.add(
+    'GUILD_INTEGRATIONS', 'GUILD_VOICE_STATES',
+    'GUILDS', 'GUILD_MESSAGES', 'GUILD_MEMBERS', 'GUILD_MESSAGE_REACTIONS',
+    'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS');
+
+export const Bot = new Discord.Client({ intents: myIntents }) as IBot
+
+loadLogger()
+loadConfig()
 loadState()
 
-//Modules
-playercount()
-echo()
-//bans()
-voicelog()
-activities()
-reactions()
+//
+Interactions.Load(Bot)
+Events.RegisterEvents(Bot)
+Modules.LoadModules(Bot)
 
+/*
 //Events
-BotClient.on('ready', () => {
-  logger.info(`Logged in as ${BotClient.user.tag}!`)
-});
-//let eventDragon = moment().weekday(6).set({ 'hour': 19, 'minute': 0, "second": 0, "ms": 0 });
-//console.log(eventDragon.format())
+Bot.on('ready', () => {
+    logger.info(`Logged in as ${Bot.user.tag}!`)
+});*/
 
 //Login
-BotClient.login(token);
+const token = process.env.token
+Bot.login(token);
+
+export interface IBot extends Client {
+    /** Основные настройки
+     * @type {IConfig}
+     * @memberof DClient
+     */
+    "config": IConfig,
+    "logger": Logger
+}

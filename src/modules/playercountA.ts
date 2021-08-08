@@ -1,34 +1,47 @@
 import { status } from "minecraft-server-util"
 
-import { BotClient, logger } from '../index'
+import { IModule } from "."
+import { IBot } from '../index'
 import { sleep } from '../utils'
 
 //var lastOnline = Infinity
-export let max = 0
-export let online = 0
-export let players: string[] = []
+let Bot: IBot
+//let host: string
+//let port: number
+let server: { host: string, port: number }
+//
+let max = 0
+let online = 0
+let players: string[] = []
 
-async function updateCount() {
-    try {
-        const data = await status('minecrafting.ru', { port: 25565 })
-        online = data.onlinePlayers
-        max = data.maxPlayers
-        players = data.samplePlayers.map((p) => { return p.name })
-        /* if (online != lastOnline) {
-            await BotClient.user.setActivity("на " + online + " из " + max + " игроков", { "type": "WATCHING" })
-            lastOnline = online
-        } */
-        await sleep(10 * 1000)
-    } catch (err) {
-        logger.warn(err)
-        await sleep(60 * 1000)
-    } finally {
-        updateCount()
+function Load(client: IBot): void {
+    Bot = client
+    server = client.config.mcServer
+    //host = client.config.mcServer.host
+    //port = client.config.mcServer.port
+}
+
+async function CountLoop(): Promise<void> {
+    for (; ;) {
+        try {
+            const data = await status(server.host, { port: server.port })
+            online = data.onlinePlayers
+            max = data.maxPlayers
+            players = data.samplePlayers.map((p) => { return p.name })
+            /* if (online != lastOnline) {
+                await BotClient.user.setActivity("на " + online + " из " + max + " игроков", { "type": "WATCHING" })
+                lastOnline = online
+            } */
+            await sleep(10 * 1000)
+        } catch (err) {
+            Bot.logger.error('Player Count - Error')
+            Bot.logger.error(err)
+            await sleep(60 * 1000)
+        }
     }
 }
 
-export default function (): void {
-    BotClient.on("ready", async () => {
-        updateCount()
-    })
-}
+export { online, max, players }
+
+const Module: IModule = { Load: Load, Run: CountLoop }
+export default Module

@@ -1,27 +1,35 @@
-import { TextChannel } from "discord.js"
+import { TextChannel, MessageEmbedOptions } from "discord.js"
 import fetch from "node-fetch"
 import $ from "cheerio"
 
-import { BotClient } from '../index'
+import { State, IBot } from '..'
 import { sleep, fixMD } from '../utils'
-import { config } from '../lib/config'
-import { savedState } from '../lib/state'
+import { IModule } from "."
+import { IConfig } from "../lib/config"
 
-export let lastID = 0
+let lastID = 0
+let Bot: IBot
+let Config: IConfig
 let channel: TextChannel
 
-export default function (): void {
-    BotClient.on("ready", async () => {
-        channel = await BotClient.channels.fetch(config.chServerLog) as TextChannel
-        lastID = savedState.bansID
-        checkBans()
-    })
+function Load(client: IBot): void {
+    Bot = client
+    Config = Bot.config
+    lastID = State.bansID
+}
+
+async function BansLoop(): Promise<void> {
+    channel = await Bot.channels.fetch(Config.channels.chServerLog) as TextChannel
+    for (; ;) {
+        await checkBans()
+        State.bansID = lastID
+    }
 }
 
 async function checkBans() {
     try {
         const bans: Ban[] = []
-        const page = $.load(await (await fetch(config.bansPage)).text())
+        const page = $.load(await (await fetch(Config.bansPage)).text())
         page('.ban_item').each((index, element) => {
             bans.push(parseBan(element))
             if (index == 9) { return false }
@@ -52,14 +60,14 @@ function parseBan(e: cheerio.Element): Ban {
 }
 
 async function reportBan(b: Ban) {
-    const embed = {
+    const embed: MessageEmbedOptions = {
         //"author": { "name": user.username, "icon_url": user.avatarURL },
         "color": b.ban_second ? 4289797 : 13632027,
         "description": `Игрок **${fixMD(b.ban_player)}** был заблокирован с причиной "**${b.ban_reason}**"`,
         "footer": { "text": b.ban_operator },
         "timestamp": b.ban_date.getTime()
     }
-    await channel.send({ "embed": embed })
+    await channel.send({ "embeds": [embed] })
 }
 
 interface Ban {
@@ -69,4 +77,7 @@ interface Ban {
     ban_reason: string,
     ban_operator: string,
     ban_second: boolean
-} 
+}
+
+const Module: IModule = { Load: Load, Run: BansLoop }
+export default Module

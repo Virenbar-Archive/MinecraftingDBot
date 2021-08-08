@@ -1,39 +1,37 @@
 import fs from "fs"
-import { logger } from '../index'
-import { lastID } from '../modules/bans'
+import { Bot } from '..'
 import { sleep } from "../utils"
 
 const file = "state.json"
-export let savedState: State
+export let State: IState
 
 export function loadState(auto = true): void {
     if (fs.existsSync(file)) {
         const raw = fs.readFileSync(file, 'utf8')
-        savedState = JSON.parse(raw)
+        State = JSON.parse(raw)
     } else {
-        savedState = { bansID: 0, rssID: '' }
+        State = { bansID: 0, rssID: '' }
     }
     if (auto) { autoSave() }
 }
 
-async function autoSave() {
-    try {
-        await sleep(30 * 60 * 1000)
-        saveState()
-    } catch {
-        logger.error("Error saving state")
-    } finally {
-        autoSave()
+async function autoSave(): Promise<void> {
+    for (; ;) {
+        try {
+            await sleep(30 * 60 * 1000)
+            saveState()
+        } catch {
+            Bot.logger.error("Error saving state")
+        }
     }
 }
 
-function saveState() {
-    savedState.bansID = lastID
-    const data = JSON.stringify(savedState)
+export function saveState(): void {
+    const data = JSON.stringify(State)
     fs.writeFileSync(file, data)
 }
 
-interface State {
+interface IState {
     bansID: number,
     rssID: string
 }
