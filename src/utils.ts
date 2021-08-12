@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-inferrable-types */
 /**
  * Sleep for ms
  * @param ms milliseconds
@@ -16,12 +17,11 @@ export function fixMD(str: string): string {
 /**
  * Format bytes to string
  * https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
- * @export в 
  * @param {number} bytes
  * @param {number} [decimals=2]
  * @returns {string}
  */
-export function formatBytes(bytes: number, decimals = 2): string {
+export function formatBytes(bytes: number, decimals: number = 2): string {
     if (bytes === 0) return '0 Bytes';
 
     const k = 1024;
@@ -31,4 +31,19 @@ export function formatBytes(bytes: number, decimals = 2): string {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+/**
+ * 
+ * @returns {string} **Label:** Text
+ */
+export function labelString(label: string, text: string): string {
+    return `**${label}:** ` + text
+}
+
+/**
+ * Removes indent after newlines
+ */
+export function remIndent(text: string): string {
+    return text.replace(/\n\s+/gm, "\n")
 }

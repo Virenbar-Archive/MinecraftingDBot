@@ -1,21 +1,23 @@
+import { ApplicationCommandData, ApplicationCommandOptionData, Collection, CommandInteraction, Snowflake } from 'discord.js';
 import fs from 'fs';
 import path from "path";
-import { ApplicationCommandData, ApplicationCommandOptionData, Client, Collection, CommandInteraction } from 'discord.js';
 //import glob from 'glob';
 
 import { IModule } from '.';
-import { logger } from '../index'
+import { DClient } from '..'
 
 const Commands = new Collection<string, ICommand>();
 const Path = path.join(__dirname, '../commands/')
-let Bot: Client
 
-function Load(client: Client): void {
+let Bot: DClient
+let Config: { guild: Snowflake, channel: Snowflake }
+
+function Load(client: DClient): void {
     Bot = client
-    Bot.on('ready', ReadyHandler)
+    Config = client.config.primary
 }
 
-async function ReadyHandler(): Promise<void> {
+async function Run(): Promise<void> {
     try {
         //const commandFiles = glob(`${__dirname}/commands/*.{.js,.ts}`)
         const commandFiles = fs.readdirSync(Path).filter(file => file.endsWith('.js'));
@@ -28,13 +30,13 @@ async function ReadyHandler(): Promise<void> {
         }
         const CommandData = Commands.map<ApplicationCommandData>((v, k) => { return { name: k, description: v.description, options: v.options } })
         //const Acommands = await Bot.application?.commands.set([])
-        await Bot.guilds.cache.get('227803301725339649')?.commands.set(CommandData)
+        await Bot.guilds.cache.get(Config.guild)?.commands.set(CommandData)
         //await Bot.guilds.cache.get('298505396719452160')?.commands.set(CommandData)
 
         AddHandler()
     } catch (err) {
-        logger.error('Error loading interactions module')
-        logger.error(err)
+        Bot.logger.error('Error loading interactions module')
+        Bot.logger.error(err)
     }
 }
 
@@ -46,13 +48,14 @@ function AddHandler(): void {
         try {
             await Commands.get(interaction.commandName).execute(interaction);
         } catch (err) {
-            logger.error(err);
+            Bot.logger.error(err);
             //await interaction.reply({ content: 'Ошибка выполнения команды', ephemeral: true });
         }
     });
 }
 
-export default { Load: Load } as IModule
+const Module: IModule = { Load: Load, Run: Run }
+export default Module
 
 export interface ICommand {
     name: string,

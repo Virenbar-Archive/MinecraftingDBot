@@ -1,22 +1,25 @@
-import { TextChannel, MessageEmbedOptions, Client } from "discord.js"
+import { TextChannel, MessageEmbedOptions } from "discord.js"
 import fetch from "node-fetch"
 import $ from "cheerio"
 
-import { State, Config } from '../index'
+import { State, DClient } from '..'
 import { sleep, fixMD } from '../utils'
 import { IModule } from "."
+import { IConfig } from "../lib/config"
 
 let lastID = 0
-let Bot: Client
+let Bot: DClient
+let Config: IConfig
 let channel: TextChannel
 
-function Load(client: Client): void {
+function Load(client: DClient): void {
     Bot = client
+    Config = Bot.config
     lastID = State.bansID
 }
 
 async function BansLoop(): Promise<void> {
-    channel = await Bot.channels.fetch(Config.chServerLog) as TextChannel
+    channel = await Bot.channels.fetch(Config.channels.chServerLog) as TextChannel
     for (; ;) {
         await checkBans()
         State.bansID = lastID
@@ -76,4 +79,5 @@ interface Ban {
     ban_second: boolean
 }
 
-export default { Load: Load, Run: BansLoop } as IModule
+const Module: IModule = { Load: Load, Run: BansLoop }
+export default Module

@@ -3,10 +3,6 @@
 		{
 			"name": "Root",
 			"path": "."
-		},
-		{
-			"name": "Source",
-			"path": "./src"
 		}
 	],
 	"settings": {}

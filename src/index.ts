@@ -1,10 +1,10 @@
-import { configure, getLogger } from "log4js"
-import Discord, { Intents } from "discord.js"
+import { configure, getLogger, Logger } from "log4js"
+import Discord, { Client, Intents } from "discord.js"
 import dotenv from "dotenv"
 dotenv.config()
 
-export { Config } from './lib/config'
-import { loadConfig } from './lib/config'
+//export { Config } from './lib/config'
+import { Config, IConfig, loadConfig } from './lib/config'
 
 export { State, saveState } from './lib/state'
 import { loadState } from './lib/state'
@@ -18,7 +18,7 @@ configure({
         errors: { type: 'logLevelFilter', appender: 'errorFile', level: 'error' }
     },
     categories: {
-        default: { appenders: ["console", "debugFile", "erorrs"], level: "debug" }
+        default: { appenders: ["console", "debugFile", "errors"], level: "debug" }
     }
 });
 export const logger = getLogger("DBot")
@@ -33,8 +33,9 @@ myIntents.add(
     'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'
 );
 
-const BotClient = new Discord.Client({ intents: myIntents })
-const token = process.env.token
+const BotClient = new Discord.Client({ intents: myIntents }) as DClient
+BotClient.logger = logger
+BotClient.config = Config
 
 Modules.LoadModules(BotClient)
 
@@ -44,6 +45,7 @@ BotClient.on('ready', () => {
 });
 
 //Login
+const token = process.env.token
 BotClient.login(token);
 
 //Modules
@@ -52,6 +54,11 @@ BotClient.login(token);
 //voicelog()
 //reactions()
 
-//let eventDragon = moment().weekday(6).set({ 'hour': 19, 'minute': 0, "second": 0, "ms": 0 });
-//console.log(eventDragon.format())
-
+export interface DClient extends Client {
+    /** Основные настройки
+     * @type {IConfig}
+     * @memberof DClient
+     */
+    "config": IConfig,
+    "logger": Logger
+}

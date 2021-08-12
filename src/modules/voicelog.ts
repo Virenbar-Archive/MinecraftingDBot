@@ -1,13 +1,17 @@
-import { Client, TextChannel, VoiceState } from "discord.js"
+import { TextChannel, VoiceState } from "discord.js"
 
 import { IModule } from "."
-import { logger, Config } from '../index'
+import { DClient } from '../index'
+import { IConfig } from "../lib/config"
 
 let channel: TextChannel
-let Bot: Client
+let Bot: DClient
+let Config: IConfig
 
-function Load(client: Client): void {
+function Load(client: DClient): void {
     Bot = client
+    Config = client.config
+
     console.log(Config.chVoiceLog.guild)
     console.log(Config.chVoiceLog.channel)
 }
@@ -31,13 +35,14 @@ async function checkState(oldMember: VoiceState, newMember: VoiceState) {
         } else if (oldVoice && !newVoice) {
             message = `${username} :: Left ${oldVoice.name}`
         } else { return }
-        logger.info(message)
+        Bot.logger.info(message)
         channel.send(message)
         //await (await client.channels.fetch(voicelog) as TextChannel).send(message)
     } catch (err) {
-        logger.error("Voice - Unknown error")
-        logger.error(err)
+        Bot.logger.error("Voice - Unknown error")
+        Bot.logger.error(err)
     }
 }
 
-export default { Load: Load, Run: Run } as IModule
+const Module: IModule = { Load, Run }
+export default Module

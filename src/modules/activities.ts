@@ -14,7 +14,7 @@ function Load(BotClient: Client): void {
     Bot = BotClient
 }
 
-async function ActivityLoop() {
+async function ActivityLoop(): Promise<void> {
     for (; ;) {
         try {
             await changeActivity()
@@ -46,4 +46,5 @@ async function changeActivity() {
     i = i % n
 }
 
-export default { Load: Load, Run: ActivityLoop } as IModule
+const Module: IModule = { Load, Run: ActivityLoop }
+export default Module

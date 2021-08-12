@@ -3,7 +3,7 @@ import { Snowflake } from "discord.js"
 import fs from "fs"
 import path from "path"
 
-import { logger } from '../index'
+import { logger } from '..'
 
 const file = path.join(__dirname, '../../config.json')
 let fsw: fs.FSWatcher
@@ -30,28 +30,18 @@ function readConfig(): void {
     Config = JSON.parse(raw)
     logger.info(Config)
 }
-/*
-function ParceConfig(config: ConfigFile): Config {
-    return {
-        "prefix": config.prefix,
-        "token": config.token,
-        "mcServer": config.mcServer,
-        "chVoiceLog": config.chVoiceLog,
-        "chNews": config.chNews,
-        "chMinecraft": config.chMinecraft,
-        "chServerLog": config.chServerLog,
-        "bansPage": config.bansPage,
-        "badUsers": new Set<string>(config.badUsers)
-    }
-}
 
-interface Config extends Omit<ConfigFile, "badUsers"> {
-    "badUsers": Set<string>
-}
-*/
 export interface IConfig {
-    "prefix": string,
     "token": string,
+    "primary": {
+        "guild": Snowflake,
+        "channel": Snowflake
+    },
+    "channels": {
+        "chNews": Snowflake,
+        "chMinecraft": Snowflake,
+        "chServerLog": Snowflake
+    },
     "mcServer": {
         "host": string,
         "port": number
@@ -60,9 +50,7 @@ export interface IConfig {
         "guild": Snowflake,
         "channel": Snowflake
     },
-    "chNews": Snowflake,
-    "chMinecraft": Snowflake,
-    "chServerLog": Snowflake,
+
     "bansPage": string,
     "badUsers": string[]
 }

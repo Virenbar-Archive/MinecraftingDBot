@@ -1,5 +1,5 @@
 import fs from "fs"
-import { logger } from '../index'
+import { logger } from '..'
 import { sleep } from "../utils"
 
 const file = "state.json"

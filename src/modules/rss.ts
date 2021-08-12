@@ -48,6 +48,6 @@ export default async function (client: Client): Promise<void> {
       },
       "timestamp": DateTime.fromISO(item.pubDate).toJSDate()
     }
-    await (await client.channels.fetch(Config.chNews) as TextChannel).send({ "embeds": [embed] })
+    await (await client.channels.fetch(Config.channels.chNews) as TextChannel).send({ "embeds": [embed] })
   }
 }
