@@ -2,8 +2,8 @@ import os from "os";
 import { DateTime, Duration } from "luxon";
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 
-import { ICommand } from '../modules/interactions';
-import { formatBytes, remIndent } from "../utils";
+import { ICommand } from '..';
+import { formatBytes, remIndent } from "../../utils";
 
 const command: ICommand = {
     name: 'system',

@@ -2,17 +2,17 @@ import { TextChannel, MessageEmbedOptions } from "discord.js"
 import fetch from "node-fetch"
 import $ from "cheerio"
 
-import { State, DClient } from '..'
+import { State, IBot } from '..'
 import { sleep, fixMD } from '../utils'
 import { IModule } from "."
 import { IConfig } from "../lib/config"
 
 let lastID = 0
-let Bot: DClient
+let Bot: IBot
 let Config: IConfig
 let channel: TextChannel
 
-function Load(client: DClient): void {
+function Load(client: IBot): void {
     Bot = client
     Config = Bot.config
     lastID = State.bansID

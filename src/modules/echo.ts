@@ -5,10 +5,10 @@ Resends message to everyone in same voice channel as sender.
 import { Message, MessageEmbedOptions, StageChannel, VoiceChannel } from "discord.js"
 
 import { IModule } from "."
-import { DClient } from ".."
+import { IBot } from ".."
 
-let Bot: DClient
-function Load(client: DClient): void { Bot = client }
+let Bot: IBot
+function Load(client: IBot): void { Bot = client }
 
 async function EchoMessage(message: Message) {
   const user = message.author

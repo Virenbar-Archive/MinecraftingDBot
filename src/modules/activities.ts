@@ -1,16 +1,15 @@
-import { Client } from "discord.js";
 import _ from "lodash"
 
-import { logger } from '../index'
+import { IBot } from '../index'
 import { sleep } from '../utils';
 import { max, online, players } from '../modules/playercountA';
 import { IModule } from ".";
 
 const n = 2
 let i = 0
-let Bot: Client
+let Bot: IBot
 
-function Load(BotClient: Client): void {
+function Load(BotClient: IBot): void {
     Bot = BotClient
 }
 
@@ -19,8 +18,8 @@ async function ActivityLoop(): Promise<void> {
         try {
             await changeActivity()
         } catch (err) {
-            logger.error('Activity - Unknown error')
-            logger.error(err)
+            Bot.logger.error('Activity - Unknown error')
+            Bot.logger.error(err)
             await sleep(10 * 1000)
         }
     }

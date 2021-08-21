@@ -3,7 +3,7 @@ import { Snowflake } from "discord.js"
 import fs from "fs"
 import path from "path"
 
-import { logger } from '..'
+import { Bot } from '..'
 
 const file = path.join(__dirname, '../../config.json')
 let fsw: fs.FSWatcher
@@ -16,7 +16,7 @@ export function loadConfig(watch = false): void {
         if (watch) {
             fsw = fs.watch(file)
             fsw.on('change', () => {
-                logger.debug('Reloading config')
+                Bot.logger.debug('Reloading config')
                 readConfig()
             })
         }
@@ -28,7 +28,7 @@ export function loadConfig(watch = false): void {
 function readConfig(): void {
     const raw = fs.readFileSync(file, 'utf8')
     Config = JSON.parse(raw)
-    logger.info(Config)
+    Bot.logger.info(Config)
 }
 
 export interface IConfig {

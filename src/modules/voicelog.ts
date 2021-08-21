@@ -1,14 +1,14 @@
 import { TextChannel, VoiceState } from "discord.js"
 
 import { IModule } from "."
-import { DClient } from '../index'
+import { IBot } from '../index'
 import { IConfig } from "../lib/config"
 
 let channel: TextChannel
-let Bot: DClient
+let Bot: IBot
 let Config: IConfig
 
-function Load(client: DClient): void {
+function Load(client: IBot): void {
     Bot = client
     Config = client.config
 

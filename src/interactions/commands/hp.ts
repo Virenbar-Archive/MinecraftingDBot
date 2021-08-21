@@ -1,5 +1,5 @@
 import { CommandInteraction } from 'discord.js';
-import { ICommand } from '../modules/interactions';
+import { ICommand } from '..';
 
 const command: ICommand = {
     name: 'hornypolice',

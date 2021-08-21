@@ -3,7 +3,6 @@ import Discord, { Client, Intents } from "discord.js"
 import dotenv from "dotenv"
 dotenv.config()
 
-//export { Config } from './lib/config'
 import { Config, IConfig, loadConfig } from './lib/config'
 
 export { State, saveState } from './lib/state'
@@ -21,7 +20,7 @@ configure({
         default: { appenders: ["console", "debugFile", "errors"], level: "debug" }
     }
 });
-export const logger = getLogger("DBot")
+const logger = getLogger("DBot")
 
 loadConfig()
 loadState()
@@ -33,28 +32,22 @@ myIntents.add(
     'DIRECT_MESSAGES', 'DIRECT_MESSAGE_REACTIONS'
 );
 
-const BotClient = new Discord.Client({ intents: myIntents }) as DClient
-BotClient.logger = logger
-BotClient.config = Config
+export const Bot = new Discord.Client({ intents: myIntents }) as IBot
+Bot.logger = logger
+Bot.config = Config
 
-Modules.LoadModules(BotClient)
+Modules.LoadModules(Bot)
 
 //Events
-BotClient.on('ready', () => {
-    logger.info(`Logged in as ${BotClient.user.tag}!`)
+Bot.on('ready', () => {
+    logger.info(`Logged in as ${Bot.user.tag}!`)
 });
 
 //Login
 const token = process.env.token
-BotClient.login(token);
+Bot.login(token);
 
-//Modules
-//echo()
-//bans()
-//voicelog()
-//reactions()
-
-export interface DClient extends Client {
+export interface IBot extends Client {
     /** Основные настройки
      * @type {IConfig}
      * @memberof DClient

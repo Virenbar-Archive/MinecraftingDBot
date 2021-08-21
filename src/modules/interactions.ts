@@ -1,18 +1,18 @@
-import { ApplicationCommandData, ApplicationCommandOptionData, Collection, CommandInteraction, Snowflake } from 'discord.js';
+import { ApplicationCommandData, ApplicationCommandOptionData, Collection, CommandInteraction, SelectMenuInteraction, Snowflake } from 'discord.js';
 import fs from 'fs';
 import path from "path";
 //import glob from 'glob';
 
 import { IModule } from '.';
-import { DClient } from '..'
+import { IBot } from '..'
 
 const Commands = new Collection<string, ICommand>();
 const Path = path.join(__dirname, '../commands/')
 
-let Bot: DClient
+let Bot: IBot
 let Config: { guild: Snowflake, channel: Snowflake }
 
-function Load(client: DClient): void {
+function Load(client: IBot): void {
     Bot = client
     Config = client.config.primary
 }
@@ -63,4 +63,10 @@ export interface ICommand {
     cooldown: number,
     options?: ApplicationCommandOptionData[],
     execute(Interaction: CommandInteraction): Promise<void>,
+}
+
+export interface IContextMenu {
+    name: string,
+    cooldown: number,
+    execute(Interaction: SelectMenuInteraction): Promise<void>,
 }

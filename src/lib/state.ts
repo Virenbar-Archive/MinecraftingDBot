@@ -1,5 +1,5 @@
 import fs from "fs"
-import { logger } from '..'
+import { Bot } from '..'
 import { sleep } from "../utils"
 
 const file = "state.json"
@@ -21,7 +21,7 @@ async function autoSave(): Promise<void> {
             await sleep(30 * 60 * 1000)
             saveState()
         } catch {
-            logger.error("Error saving state")
+            Bot.logger.error("Error saving state")
         }
     }
 }

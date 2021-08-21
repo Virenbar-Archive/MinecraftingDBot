@@ -1,11 +1,11 @@
 import { status } from "minecraft-server-util"
 
 import { IModule } from "."
-import { DClient } from '../index'
+import { IBot } from '../index'
 import { sleep } from '../utils'
 
 //var lastOnline = Infinity
-let Bot: DClient
+let Bot: IBot
 //let host: string
 //let port: number
 let server: { host: string, port: number }
@@ -14,7 +14,7 @@ let max = 0
 let online = 0
 let players: string[] = []
 
-function Load(client: DClient): void {
+function Load(client: IBot): void {
     Bot = client
     server = client.config.mcServer
     //host = client.config.mcServer.host
