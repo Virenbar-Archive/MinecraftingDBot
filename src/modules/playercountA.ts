@@ -27,11 +27,7 @@ async function CountLoop(): Promise<void> {
             const data = await status(server.host, { port: server.port })
             online = data.onlinePlayers
             max = data.maxPlayers
-            players = data.samplePlayers.map((p) => { return p.name })
-            /* if (online != lastOnline) {
-                await BotClient.user.setActivity("на " + online + " из " + max + " игроков", { "type": "WATCHING" })
-                lastOnline = online
-            } */
+            players = data.samplePlayers ? data.samplePlayers.map((p) => { return p.name }) : []
             await sleep(10 * 1000)
         } catch (err) {
             Bot.logger.error('Player Count - Error')

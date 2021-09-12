@@ -1,6 +1,6 @@
 {
   "name": "minecraftingdbot",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "Discord bot for unofficial Minecrafting.ru discord",
   "main": "index.js",
   "scripts": {
