@@ -2,7 +2,6 @@ name: Publish Release
 
 on:
   push:
-    branches: [ master ]
     tags: [ v*.*.* ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -28,11 +27,12 @@ jobs:
           npm ci
           npm run build --if-present
           npm run test --if-present
+          
+      - name: Zip Build
+        run: | 
+          zip -r build.zip build package.json package-lock.json
       
       - name: Create Release
         uses: softprops/action-gh-release@v0.1.12
         with:
-          files: |
-            build/*
-            package.json
-            package-lock.json
+          files: build.zip
